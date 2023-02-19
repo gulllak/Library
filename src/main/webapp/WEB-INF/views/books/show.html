@@ -13,7 +13,7 @@
     <form th:method="PATCH" th:action="@{/books/assignBook/{id}(id = ${book.getBook_id()})}">
         <label for="person">Выберите человека</label>
         <select th:object="${nullPerson}" th:field="*{person_id}" id = "person">
-            <option th:each="per : ${people}" th:value="${per.getPerson_id()}" th:text="${per.getFull_name()}"></option>
+            <option th:each="per : ${people}" th:value="${per.getPerson_id()}" th:text="${per.getFullName()}"></option>
         </select>
         <input type="submit" value="Назначить книгу"/>
     </form>
@@ -27,7 +27,7 @@
     </form>
 </div>
 <div th:unless="${person == null}">
-    <span>Книга сейчас  у: <span th:text="${person.getFull_name()}">person</span></span>
+    <span>Книга сейчас  у: <span th:text="${person.getFullName()}">person</span></span>
     <form th:method="PATCH" th:action="@{/books/free/{id}(id = ${book.getBook_id()})}">
         <input type="submit" value="Освободить"/>
     </form>
@@ -40,6 +40,9 @@
         <input type="submit" value="Удалить"/>
     </form>
 </div>
+
+<br/>
+<a href="/books">К списку книг</a>
 
 </body>
 </html>

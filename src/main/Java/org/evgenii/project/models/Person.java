@@ -2,6 +2,7 @@ package org.evgenii.project.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,21 +24,21 @@ public class Person {
     @Column(name = "full_name")
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 5, max = 50, message = "Имя должно быть не менее 5 и не более 50 символов")
-    private String full_name;
+    private String fullName;
     @Column(name = "birthdate")
     @Min(value = 1940, message = "Год рождения должен быть не менее чем 1940 г.")
     @Max(value = 2022, message = "Год рождения должен быть не более чем 2022 г.")
     private int birthdate;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Book> books;
 
     public Person(){
     }
 
-    public Person(int person_id, String full_name, int birthdate) {
+    public Person(int person_id, String fullName, int birthdate) {
         this.person_id = person_id;
-        this.full_name = full_name;
+        this.fullName = fullName;
         this.birthdate = birthdate;
     }
 
@@ -49,12 +50,12 @@ public class Person {
         this.person_id = person_id;
     }
 
-    public String getFull_name() {
-        return full_name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFull_name(String full_name) {
-        this.full_name = full_name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public int getBirthdate() {
