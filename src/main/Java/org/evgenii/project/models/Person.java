@@ -2,7 +2,6 @@ package org.evgenii.project.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +29,7 @@ public class Person {
     @Max(value = 2022, message = "Год рождения должен быть не более чем 2022 г.")
     private int birthdate;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner")
     private List<Book> books;
 
     public Person(){
