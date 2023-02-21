@@ -24,10 +24,16 @@ public class BooksController {
 
     @GetMapping
     public String index(Model model,
-                        @RequestParam(value = "page", required = false) int page,
-                        @RequestParam(value = "books_per_page", required = false) int booksPerPage) {
-        if (page >=0 && booksPerPage >= 0) {
+                        @RequestParam(value = "page", required = false) Integer page,
+                        @RequestParam(value = "books_per_page", required = false) Integer booksPerPage,
+                        @RequestParam(value = "sort_by_year", required = false)  Boolean isSort) {
+
+        if (page != null & booksPerPage != null & isSort != null) {
+            model.addAttribute("books", bookService.SortedIndexPerPages(page, booksPerPage));
+        } else if(page != null & booksPerPage != null){
             model.addAttribute("books", bookService.index(page, booksPerPage));
+        } else if(page == null & booksPerPage == null & isSort != null) {
+            model.addAttribute("books", bookService.index(isSort));
         } else {
             model.addAttribute("books", bookService.index());
         }

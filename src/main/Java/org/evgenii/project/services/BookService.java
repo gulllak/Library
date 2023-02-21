@@ -6,6 +6,7 @@ import org.evgenii.project.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,17 @@ public class BookService {
         return bookRepository.findAll();
     }
 
+    public List<Book> index(boolean isSort){
+        return isSort ? bookRepository.findAll(Sort.by("year")) : index();
+    }
+
     public List<Book> index(int page, int booksPerPage){
         Pageable pageNumberAndCountBooks = PageRequest.of(page, booksPerPage);
+        return bookRepository.findAll(pageNumberAndCountBooks).toList();
+    }
+
+    public List<Book> SortedIndexPerPages(int page, int booksPerPage){
+        Pageable pageNumberAndCountBooks = PageRequest.of(page, booksPerPage, Sort.by("year"));
         return bookRepository.findAll(pageNumberAndCountBooks).toList();
     }
 
