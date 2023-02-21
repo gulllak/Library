@@ -107,4 +107,23 @@ public class BooksController {
 
         return "redirect:/books";
     }
+
+    @GetMapping("/search")
+    public String searchBook(@RequestParam(value = "searchQuery", required = false) String searchQuery, Model model) {
+        if(searchQuery != null) {
+            if (searchQuery.equals("")) {
+                return "redirect:/books/search";
+            }
+            Book book = bookService.searchBook(searchQuery);
+            model.addAttribute("mainPages", true);
+            model.addAttribute("book", book);
+            if(book != null) {
+                model.addAttribute("person", bookService.usersBook(book.getBook_id()));
+            }
+            return "books/search";
+        }
+
+        model.addAttribute("mainPages", false);
+        return "books/search";
+    }
 }

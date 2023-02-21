@@ -81,4 +81,8 @@ public class BookService {
     public Person usersBook(int id) {
         return show(id).getOwner();
     }
+
+    public Book searchBook(String searchQuery) {
+        return bookRepository.findFirstByNameStartingWith(searchQuery.substring(0,1).toUpperCase() + searchQuery.substring(1));
+    }
 }
