@@ -114,16 +114,8 @@ public class BooksController {
             if (searchQuery.equals("")) {
                 return "redirect:/books/search";
             }
-            Book book = bookService.searchBook(searchQuery);
-            model.addAttribute("mainPages", true);
-            model.addAttribute("book", book);
-            if(book != null) {
-                model.addAttribute("person", bookService.usersBook(book.getBook_id()));
-            }
-            return "books/search";
+            model.addAttribute("books", bookService.searchBook(searchQuery));
         }
-
-        model.addAttribute("mainPages", false);
         return "books/search";
     }
 }

@@ -5,30 +5,37 @@
     <title>Поиск книг</title>
 </head>
 <body>
+<h4>Поиск книги по названию</h4>
 <form th:method="GET" th:action="@{/books/search}">
-    <label for="name">Введите поисковой запрос</label>
+    <label for="name">Введите поисковой запрос: </label>
     <input id="name" type="text" th:name="searchQuery">
-    <br>
+    <br/>
     <input type="submit" value="Найти!">
 </form>
 
-<div th:if="${mainPages == true}">
-    <div th:if="${book != null}">
-        <br>
-        <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</p>
-        <div th:if="${person != null}">
-            <p th:text="${'Книга сейчас у: ' + person.getFullName()}">person</p>
-        </div>
-        <div th:unless="${person != null}">
-            <span>Книга свободна</span>
-        </div>
-    </div>
-    <div th:if="${book == null}">
-        <br>
+<div th:if="${books}">
+    <div th:if="${books.isEmpty()}">
+        <br/>
         <span>Книг не найдено</span>
     </div>
-</div>
 
+    <div th:unless="${books.isEmpty()}">
+        <br/>
+        <div th:each="book : ${books}">
+            <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</p>
+            <div th:if="${book.getOwner() != null}">
+                <p th:text="${'Книга сейчас у: ' + book.getOwner().getFullName()}">person</p>
+                <hr>
+            </div>
+            <div th:unless="${book.getOwner() != null}">
+                <span>Книга свободна</span>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<a href="/books">К списку книг</a>
 
 </body>
 </html>
