@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "book")
@@ -32,11 +34,16 @@ public class Book {
     @JoinColumn(name = "person_id", referencedColumnName = "person_id")
     private Person owner;
 
+    @Column(name = "book_timer")
+    private LocalDateTime bookTimer;
+
+    @Transient
+    private boolean expired;
+
     public Book(){
     }
 
-    public Book(int book_id, String name, String author, int year) {
-        this.book_id = book_id;
+    public Book(String name, String author, int year) {
         this.name = name;
         this.author = author;
         this.year = year;
@@ -72,6 +79,22 @@ public class Book {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public LocalDateTime getBookTimer() {
+        return bookTimer;
+    }
+
+    public void setBookTimer(LocalDateTime bookTimer) {
+        this.bookTimer = bookTimer;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
 
     public Person getOwner() {

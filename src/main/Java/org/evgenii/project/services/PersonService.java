@@ -3,10 +3,13 @@ package org.evgenii.project.services;
 import org.evgenii.project.models.Book;
 import org.evgenii.project.models.Person;
 import org.evgenii.project.repositories.PersonRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +55,23 @@ public class PersonService {
     }
 
     public List<Book> usersBook(int id) {
-        return show(id).getBooks();
+        Optional<Person> person = personRepository.findById(id);
+
+        if(person.isPresent()){
+            Hibernate.initialize(person.get().getBooks());
+            checkTimer(person.get().getBooks());
+            return person.get().getBooks();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    private void checkTimer(List<Book> books) {
+        for (Book book : books) {
+            if(book.getBookTimer() != null) {
+                boolean bool = (LocalDateTime.now().getDayOfMonth() - book.getBookTimer().getDayOfMonth()) > 10;
+                book.setExpired(bool);
+            }
+        }
     }
 }
