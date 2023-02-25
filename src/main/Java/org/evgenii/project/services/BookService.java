@@ -5,11 +5,11 @@ import org.evgenii.project.models.Person;
 import org.evgenii.project.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,22 +22,17 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> index() {
-        return bookRepository.findAll();
+    public List<Book> index(boolean sortByYear) {
+        return sortByYear ? bookRepository.findAll(Sort.by("year")) : bookRepository.findAll();
+
     }
 
-    public List<Book> index(boolean isSort){
-        return isSort ? bookRepository.findAll(Sort.by("year")) : index();
-    }
-
-    public List<Book> index(int page, int booksPerPage){
-        Pageable pageNumberAndCountBooks = PageRequest.of(page, booksPerPage);
-        return bookRepository.findAll(pageNumberAndCountBooks).toList();
-    }
-
-    public List<Book> SortedIndexPerPages(int page, int booksPerPage){
-        Pageable pageNumberAndCountBooks = PageRequest.of(page, booksPerPage, Sort.by("year"));
-        return bookRepository.findAll(pageNumberAndCountBooks).toList();
+    public List<Book> findWithPagination(int page, int booksPerPage, boolean sortByYear){
+        if(sortByYear) {
+            return bookRepository.findAll(PageRequest.of(page, booksPerPage, Sort.by("year"))).getContent();
+        } else {
+            return bookRepository.findAll(PageRequest.of(page, booksPerPage)).getContent();
+        }
     }
 
     public Book show(int id) {
@@ -50,13 +45,13 @@ public class BookService {
     }
 
     @Transactional
-    public void update(int id, Book updateBook) {
-        Book book = show(id);
-        book.setName(updateBook.getName());
-        book.setAuthor(updateBook.getAuthor());
-        book.setYear(updateBook.getYear());
+    public void update(int id, Book updatedBook) {
+        Book bookToBeUpdated = bookRepository.findById(id).get();
+        updatedBook.setBook_id(id);
+        updatedBook.setOwner(bookToBeUpdated.getOwner());
+        updatedBook.setBookTimer(bookToBeUpdated.getBookTimer());
 
-        bookRepository.save(book);
+        bookRepository.save(updatedBook);
     }
 
     @Transactional
@@ -66,20 +61,25 @@ public class BookService {
 
     @Transactional
     public void releaseBook(int id) {
-        Book book = show(id);
-        book.setOwner(null);
-        bookRepository.save(book);
+        bookRepository.findById(id).ifPresent(
+                book -> {
+                    book.setOwner(null);
+                    book.setBookTimer(null);
+                }
+        );
     }
 
     @Transactional
     public void assignBook(Person person, int id) {
-        Book book = show(id);
-        book.setOwner(person);
-        bookRepository.save(book);
+        bookRepository.findById(id).ifPresent(
+                book -> {
+                    book.setOwner(person);
+                    book.setBookTimer(LocalDateTime.now());
+        });
     }
 
     public Person usersBook(int id) {
-        return show(id).getOwner();
+        return bookRepository.findById(id).map(Book::getOwner).orElse(null);
     }
 
     public List<Book> searchBook(String searchQuery) {

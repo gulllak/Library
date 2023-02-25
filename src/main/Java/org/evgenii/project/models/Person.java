@@ -35,8 +35,7 @@ public class Person {
     public Person(){
     }
 
-    public Person(int person_id, String fullName, int birthdate) {
-        this.person_id = person_id;
+    public Person(String fullName, int birthdate) {
         this.fullName = fullName;
         this.birthdate = birthdate;
     }

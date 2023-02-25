@@ -11,7 +11,12 @@
     <hr/>
     <span style="font-weight: bold">Книги:</span>
     <div th:each="book : ${books}">
-        <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</p>
+        <div th:if="${book.isExpired()}">
+            <p style="color: red" th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</p>
+        </div>
+        <div th:unless="${book.isExpired()}">
+            <p th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</p>
+        </div>
     </div>
     <hr>
     <form th:action="@{/people/{id}/edit(id = ${person.getPerson_id()})}">

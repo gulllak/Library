@@ -26,16 +26,12 @@ public class BooksController {
     public String index(Model model,
                         @RequestParam(value = "page", required = false) Integer page,
                         @RequestParam(value = "books_per_page", required = false) Integer booksPerPage,
-                        @RequestParam(value = "sort_by_year", required = false)  Boolean isSort) {
+                        @RequestParam(value = "sort_by_year", required = false)  boolean sortByYear) {
 
-        if (page != null & booksPerPage != null & isSort != null) {
-            model.addAttribute("books", bookService.SortedIndexPerPages(page, booksPerPage));
-        } else if(page != null & booksPerPage != null){
-            model.addAttribute("books", bookService.index(page, booksPerPage));
-        } else if(page == null & booksPerPage == null & isSort != null) {
-            model.addAttribute("books", bookService.index(isSort));
+        if (page == null || booksPerPage == null) {
+            model.addAttribute("books", bookService.index(sortByYear));
         } else {
-            model.addAttribute("books", bookService.index());
+            model.addAttribute("books", bookService.findWithPagination(page, booksPerPage, sortByYear));
         }
 
         return "books/index";
