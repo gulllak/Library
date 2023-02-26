@@ -24,10 +24,10 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Person person = (Person) target;
+        Person checkingPerson = personService.show(person.getFullName()).orElse(null);
 
-        if(personService.show(person.getFullName()).isPresent()) {
-            errors.rejectValue("full_name", "", "Такое ФИО уже есть");
+        if(checkingPerson != null && person.getPerson_id() != checkingPerson.getPerson_id()) {
+            errors.rejectValue("fullName", "", "Такое ФИО уже есть");
         }
-
     }
 }
